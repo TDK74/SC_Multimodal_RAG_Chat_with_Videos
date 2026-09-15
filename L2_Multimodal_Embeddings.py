@@ -29,27 +29,17 @@ cap2='Motorcycle on platform to be worked on in garage'
 url3='http://farm1.staticflickr.com/133/356148800_9bf03b6116_z.jpg'
 cap3='a cat laying down stretched out near a laptop'
 
-img1 = {
-  'flickr_url': url1,
-  'caption': cap1,
-  'image_path' : './shared_data/motorcycle_1.jpg'
-}
+img1 = {'flickr_url' : url1, 'caption' : cap1, 'image_path' : './shared_data/motorcycle_1.jpg'}
 
-img2 = {
-    'flickr_url': url2,
-    'caption': cap2,
-    'image_path' : './shared_data/motorcycle_2.jpg'
-}
+img2 = {'flickr_url' : url2, 'caption' : cap2, 'image_path' : './shared_data/motorcycle_2.jpg'}
 
-img3 = {
-    'flickr_url' : url3,
-    'caption': cap3,
-    'image_path' : './shared_data/cat_1.jpg'
-}
+img3 = {'flickr_url' : url3, 'caption' : cap3, 'image_path' : './shared_data/cat_1.jpg'}
 
 imgs = [img1, img2, img3]
+
 for img in imgs:
     data = requests.get(img['flickr_url']).content
+
     with open(img['image_path'], 'wb') as f:
         f.write(data)
 
@@ -63,6 +53,7 @@ for img in [img1, img2, img3]:
 
 ## ------------------------------------------------------ ##
 embeddings = []
+
 for img in [img1, img2, img3]:
     img_path = img['image_path']
     caption = img['caption']
@@ -75,19 +66,22 @@ print(len(embeddings[0]))
 
 ## ------------------------------------------------------ ##
 def cosine_similarity(vec1, vec2):
-    similarity = np.dot(vec1,vec2)/(norm(vec1)*norm(vec2))
+    similarity = np.dot(vec1, vec2) / (norm(vec1) * norm(vec2))
+
     return similarity
 
 ## ------------------------------------------------------ ##
 ex1_embed = np.array(embeddings[0])
 ex2_embed = np.array(embeddings[1])
 ex3_embed = np.array(embeddings[2])
+
 sim_ex1_ex2 = cosine_similarity(ex1_embed, ex2_embed)
 sim_ex1_ex3 = cosine_similarity(ex1_embed, ex3_embed)
 
 ## ------------------------------------------------------ ##
 print("Cosine similarity between ex1_embeded and ex2_embeded is:")
 display(sim_ex1_ex2)
+
 print("Cosine similarity between ex1_embeded and ex3_embeded is:")
 display(sim_ex1_ex3)
 
@@ -108,11 +102,9 @@ display(dist_ex1_ex3)
 #train_set_cats = dataset_cats["train"]
 #train_set_cars = dataset_cars["train"]
 
-cat_img_txt_pairs = data_prep("yashikota/cat-image-dataset",
-                             "cat", test_size=50)
+cat_img_txt_pairs = data_prep("yashikota/cat-image-dataset", "cat", test_size = 50)
 
-car_img_txt_pairs = data_prep("tanganke/stanford_cars",
-                             "car", test_size=50)
+car_img_txt_pairs = data_prep("tanganke/stanford_cars", "car", test_size = 50)
 
 ## ------------------------------------------------------ ##
 display(cat_img_txt_pairs[0]['caption'])
@@ -123,10 +115,8 @@ display(car_img_txt_pairs[0]['pil_img'])
 
 ## ------------------------------------------------------ ##
 cat_embeddings = []
-for img_txt_pair in tqdm(
-                        cat_img_txt_pairs,
-                        total=len(cat_img_txt_pairs)
-                    ):
+
+for img_txt_pair in tqdm(cat_img_txt_pairs, total = len(cat_img_txt_pairs)):
     pil_img = img_txt_pair['pil_img']
     caption = img_txt_pair['caption']
     base64_img = encode_image(pil_img)
@@ -134,10 +124,8 @@ for img_txt_pair in tqdm(
     cat_embeddings.append(embedding)
 
 car_embeddings = []
-for img_txt_pair in tqdm(
-                        car_img_txt_pairs,
-                        total=len(car_img_txt_pairs)
-                    ):
+
+for img_txt_pair in tqdm(car_img_txt_pairs, total = len(car_img_txt_pairs)):
     pil_img = img_txt_pair['pil_img']
     caption = img_txt_pair['caption']
     base64_img = encode_image(pil_img)
@@ -148,10 +136,12 @@ for img_txt_pair in tqdm(
 def dimensionality_reduction(embed_arr, label):
     X_scaled = MinMaxScaler().fit_transform(embed_arr)
     print(X_scaled)
-    mapper = UMAP(n_components=2, metric="cosine").fit(X_scaled)
-    df_emb = pd.DataFrame(mapper.embedding_, columns=["X", "Y"])
+
+    mapper = UMAP(n_components = 2, metric = "cosine").fit(X_scaled)
+    df_emb = pd.DataFrame(mapper.embedding_, columns = ["X", "Y"])
     df_emb["label"] = label
     print(df_emb)
+
     return df_emb
 
 ## ------------------------------------------------------ ##
@@ -162,15 +152,12 @@ labels = ['cat'] * len(cat_embeddings) + ['car'] * len(car_embeddings)
 reduced_dim_emb = dimensionality_reduction(all_embeddings, labels)
 
 ## ------------------------------------------------------ ##
-fig, ax = plt.subplots(figsize=(8,6))
+fig, ax = plt.subplots(figsize = (8, 6))
 
 sns.set_style("whitegrid", {'axes.grid' : False})
-sns.scatterplot(data=reduced_dim_emb,
-                x=reduced_dim_emb['X'],
-                y=reduced_dim_emb['Y'],
-                hue='label',
-                palette='bright')
-sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+sns.scatterplot(data = reduced_dim_emb, x = reduced_dim_emb['X'], y = reduced_dim_emb['Y'],
+                hue = 'label', palette = 'bright')
+sns.move_legend(ax, "upper left", bbox_to_anchor = (1, 1))
 plt.title('Scatter plot of images of cats and cars using UMAP')
 plt.xlabel('X')
 plt.ylabel('Y')
