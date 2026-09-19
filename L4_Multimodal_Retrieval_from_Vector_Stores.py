@@ -29,10 +29,9 @@ vid2_img_path = [vid['extracted_frame_path'] for vid in vid2_metadata]
 
 ## ------------------------------------------------------ ##
 n = 7
-updated_vid1_trans = [
- ' '.join(vid1_trans[i-int(n/2) : i+int(n/2)]) if i-int(n/2) >= 0 else
- ' '.join(vid1_trans[0 : i + int(n/2)]) for i in range(len(vid1_trans))
-]
+updated_vid1_trans = [' '.join(vid1_trans[i - int(n / 2) : i + int(n / 2)])
+                    if i - int(n / 2) >= 0 else ' '.join(vid1_trans[0 : i + int(n / 2)])
+                    for i in range(len(vid1_trans)) ]
 
 for i in range(len(updated_vid1_trans)):
     vid1_metadata[i]['transcript'] = updated_vid1_trans[i]
@@ -45,15 +44,13 @@ print(f'After update:\n"{updated_vid1_trans[6]}"')
 ## ------------------------------------------------------ ##
 embedder = BridgeTowerEmbeddings()
 
-_ = MultimodalLanceDB.from_text_image_pairs(
-    texts=updated_vid1_trans+vid2_trans,
-    image_paths=vid1_img_path+vid2_img_path,
-    embedding=embedder,
-    metadatas=vid1_metadata+vid2_metadata,
-    connection=db,
-    table_name=TBL_NAME,
-    mode="overwrite",
-)
+_ = MultimodalLanceDB.from_text_image_pairs(texts = updated_vid1_trans + vid2_trans,
+                                            image_paths = vid1_img_path + vid2_img_path,
+                                            embedding = embedder,
+                                            metadatas = vid1_metadata + vid2_metadata,
+                                            connection = db,
+                                            table_name = TBL_NAME,
+                                            mode = "overwrite", )
 
 ## ------------------------------------------------------ ##
 tbl = db.open_table(TBL_NAME)
@@ -63,15 +60,9 @@ print(f"There are {tbl.to_pandas().shape[0]} rows in the table")
 tbl.to_pandas()[['text', 'image_path']].head(3)
 
 ## ------------------------------------------------------ ##
-vectorstore = MultimodalLanceDB(
-    uri=LANCEDB_HOST_FILE,
-    embedding=embedder,
-    table_name=TBL_NAME)
+vectorstore = MultimodalLanceDB(uri= LANCEDB_HOST_FILE, embedding= embedder, table_name= TBL_NAME)
 
-retriever = vectorstore.as_retriever(
-    search_type='similarity',
-    search_kwargs={"k": 1}
-)
+retriever = vectorstore.as_retriever(search_type = 'similarity', search_kwargs = {"k" : 1})
 
 ## ------------------------------------------------------ ##
 query1 = "a toddler and an adult"
@@ -79,20 +70,13 @@ results = retriever.invoke(query1)
 display_retrieved_results(results)
 
 ## ------------------------------------------------------ ##
-retriever = vectorstore.as_retriever(
-    search_type='similarity',
-    search_kwargs={"k": 3})
+retriever = vectorstore.as_retriever(search_type = 'similarity', search_kwargs = {"k" : 3})
 results = retriever.invoke(query1)
 display_retrieved_results(results)
 
 ## ------------------------------------------------------ ##
-retriever = vectorstore.as_retriever(
-    search_type='similarity',
-    search_kwargs={"k": 1})
-query2 = (
-        "an astronaut's spacewalk "
-        "with an amazing view of the earth from space behind"
-)
+retriever = vectorstore.as_retriever(search_type = 'similarity', search_kwargs = {"k" : 1})
+query2 = ("an astronaut's spacewalk with an amazing view of the earth from space behind")
 results2 = retriever.invoke(query2)
 display_retrieved_results(results2)
 
