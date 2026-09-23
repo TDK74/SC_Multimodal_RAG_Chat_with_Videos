@@ -20,19 +20,17 @@ from utils import prepare_dataset_for_umap_visualization as data_prep
 
 
 ## ------------------------------------------------------ ##
-url1='http://farm3.staticflickr.com/2519/4126738647_cc436c111b_z.jpg'
-cap1='A motorcycle sits parked across from a herd of livestock'
+url1 = 'http://farm3.staticflickr.com/2519/4126738647_cc436c111b_z.jpg'
+cap1 = 'A motorcycle sits parked across from a herd of livestock'
 
-url2='http://farm3.staticflickr.com/2046/2003879022_1b4b466d1d_z.jpg'
-cap2='Motorcycle on platform to be worked on in garage'
+url2 = 'http://farm3.staticflickr.com/2046/2003879022_1b4b466d1d_z.jpg'
+cap2 = 'Motorcycle on platform to be worked on in garage'
 
-url3='http://farm1.staticflickr.com/133/356148800_9bf03b6116_z.jpg'
-cap3='a cat laying down stretched out near a laptop'
+url3 = 'http://farm1.staticflickr.com/133/356148800_9bf03b6116_z.jpg'
+cap3 = 'a cat laying down stretched out near a laptop'
 
 img1 = {'flickr_url' : url1, 'caption' : cap1, 'image_path' : './shared_data/motorcycle_1.jpg'}
-
 img2 = {'flickr_url' : url2, 'caption' : cap2, 'image_path' : './shared_data/motorcycle_2.jpg'}
-
 img3 = {'flickr_url' : url3, 'caption' : cap3, 'image_path' : './shared_data/cat_1.jpg'}
 
 imgs = [img1, img2, img3]
@@ -79,28 +77,28 @@ sim_ex1_ex2 = cosine_similarity(ex1_embed, ex2_embed)
 sim_ex1_ex3 = cosine_similarity(ex1_embed, ex3_embed)
 
 ## ------------------------------------------------------ ##
-print("Cosine similarity between ex1_embeded and ex2_embeded is:")
+print("Cosine similarity between ex1_embeded and ex2_embeded is: ")
 display(sim_ex1_ex2)
 
-print("Cosine similarity between ex1_embeded and ex3_embeded is:")
+print("Cosine similarity between ex1_embeded and ex3_embeded is: ")
 display(sim_ex1_ex3)
 
 ## ------------------------------------------------------ ##
 dist_ex1_ex2 = cv2.norm(ex1_embed, ex2_embed, cv2.NORM_L2)
 dist_ex1_ex3 = cv2.norm(ex1_embed, ex3_embed, cv2.NORM_L2)
 
-print("Euclidean distance between ex1_embeded and ex2_embeded is:")
+print("Euclidean distance between ex1_embeded and ex2_embeded is: ")
 display(dist_ex1_ex2)
 
-print("Euclidean distance between ex1_embeded and ex3_embeded is:")
+print("Euclidean distance between ex1_embeded and ex3_embeded is: ")
 display(dist_ex1_ex3)
 
 ## ------------------------------------------------------ ##
-#dataset_cats = load_dataset("yashikota/cat-image-dataset")
-#dataset_cars = load_dataset("tanganke/stanford_cars")
+# dataset_cats = load_dataset("yashikota/cat-image-dataset")
+# dataset_cars = load_dataset("tanganke/stanford_cars")
 
-#train_set_cats = dataset_cats["train"]
-#train_set_cars = dataset_cars["train"]
+# train_set_cats = dataset_cats["train"]
+# train_set_cars = dataset_cars["train"]
 
 cat_img_txt_pairs = data_prep("yashikota/cat-image-dataset", "cat", test_size = 50)
 
