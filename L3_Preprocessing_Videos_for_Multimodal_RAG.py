@@ -6,6 +6,7 @@ import webvtt
 import whisper
 
 from os import path as osp
+from IPython.display import display
 from pathlib import Path
 from urllib.request import urlretrieve
 from moviepy.editor import VideoFileClip
@@ -89,10 +90,8 @@ metadatas_path = vid1_dir
 Path(extracted_frames_path).mkdir(parents = True, exist_ok = True)
 Path(metadatas_path).mkdir(parents = True, exist_ok = True)
 
-metadatas = extract_and_save_frames_and_metadata(vid1_filepath,
-                                                vid1_transcript_filepath,
-                                                extracted_frames_path,
-                                                metadatas_path, )
+metadatas = extract_and_save_frames_and_metadata(vid1_filepath, vid1_transcript_filepath,
+                                                extracted_frames_path, metadatas_path, )
 
 ## ------------------------------------------------------ ##
 print(metadatas[ : 4])
